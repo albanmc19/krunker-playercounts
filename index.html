@@ -44,32 +44,32 @@
     function initChart() {
       const ctx = document.getElementById('playerChart').getContext('2d');
       chart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
           labels: filteredData.labels,
           datasets: [{
             label: 'Nombre de joueurs',
             data: filteredData.counts,
-            backgroundColor: 'rgba(76, 175, 80, 0.5)',
+            backgroundColor: 'rgba(76, 175, 80, 0.2)',
             borderColor: 'rgba(76, 175, 80, 1)',
-            borderWidth: 1
+            borderWidth: 2,
+            pointBackgroundColor: 'rgba(76, 175, 80, 1)'
           }]
         },
         options: {
-          indexAxis: 'y',
           responsive: true,
           scales: {
             y: {
               beginAtZero: true,
               title: {
                 display: true,
-                text: 'Temps'
+                text: 'Nombre de joueurs'
               }
             },
             x: {
               title: {
                 display: true,
-                text: 'Nombre de joueurs'
+                text: 'Temps'
               }
             }
           },
