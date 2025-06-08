@@ -147,7 +147,8 @@
       try {
         const response = await fetch('/playercount');
         const data = await response.json();
-        document.getElementById('playerCount').textContent = data.playerCount;
+        document.getElementById('playerCount').textContent = 'data.playerCount';
+        console.log(data.playerCount);
         addDataPoint(data.playerCount);
       } catch (e) {
         document.getElementById('playerCount').textContent = "Erreur de chargement";
