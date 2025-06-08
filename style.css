@@ -51,9 +51,8 @@ h1 {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-#playerCount:hover {
-  background: #222;
-  box-shadow: 0 0 30px #ffcc00cc, 0 4px 16px #000c;
+#playerCount {
+  background:black;
 }
 
 /* Import d'une police pixel (Google Fonts) */
