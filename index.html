@@ -15,8 +15,6 @@
     <canvas id="playerChart"></canvas>
   </div>
 
-  <div id="dataList" style="margin: 20px auto; max-width: 900px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 16px; font-family: monospace; font-size: 16px; color: #333; text-align: left;"></div>
-
   <div class="controls">
     <button onclick="changeInterval('30min')">30 minutes</button>
     <button onclick="changeInterval('1hour')">1 heure</button>
@@ -98,16 +96,6 @@
       chart.update();
     }
 
-    function updateDataList() {
-      const dataListDiv = document.getElementById('dataList');
-      let html = '<b>Historique des valeurs récupérées :</b><br><ul style="padding-left: 20px;">';
-      for (let i = allPlayerData.labels.length - 1; i >= 0 && i > allPlayerData.labels.length - 21; i--) {
-        html += `<li>${allPlayerData.labels[i]} : <b>${allPlayerData.counts[i]}</b></li>`;
-      }
-      html += '</ul>';
-      dataListDiv.innerHTML = html;
-    }
-
     function addDataPoint(count) {
       const now = new Date();
       const timeStr = now.toLocaleTimeString() + ' ' + now.toLocaleDateString();
@@ -116,7 +104,6 @@
       saveData();
       filterDataByInterval();
       updateChart();
-      updateDataList();
     }
 
     function filterDataByInterval() {
@@ -172,7 +159,6 @@
     loadData();
     filterDataByInterval();
     initChart();
-    updateDataList();
     fetchPlayerCount();
     setInterval(fetchPlayerCount, 10000);
   </script>
