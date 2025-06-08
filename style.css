@@ -1,0 +1,44 @@
+/* style.css - Style inspiré de Krunker.io */
+
+body {
+  background: #23272a;
+  color: #fff;
+  font-family: 'Press Start 2P', 'Consolas', monospace;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  color: #ffcc00;
+  text-shadow: 2px 2px 0 #000, 4px 4px 0 #ff9900;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  letter-spacing: 2px;
+}
+
+#playerCount {
+  background: #181a1b;
+  border: 3px solid #ffcc00;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 2.5rem;
+  padding: 1.5rem 3rem;
+  box-shadow: 0 0 20px #ffcc00aa, 0 2px 8px #000a;
+  margin-bottom: 2rem;
+  text-align: center;
+  min-width: 200px;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+#playerCount:hover {
+  background: #222;
+  box-shadow: 0 0 30px #ffcc00cc, 0 4px 16px #000c;
+}
+
+/* Import d'une police pixel (Google Fonts) */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
