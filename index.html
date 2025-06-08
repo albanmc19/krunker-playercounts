@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Joueurs connectés sur Krunker.io</title>
+</head>
+<body>
+  <h1>Joueurs connectés sur Krunker.io :</h1>
+  <div id="playerCount">Chargement...</div>
+
+  <script>
+    async function fetchPlayerCount() {
+      try {
+        const response = await fetch('/playercount');
+        const data = await response.json();
+        document.getElementById('playerCount').textContent = data.playerCount;
+      } catch (e) {
+        document.getElementById('playerCount').textContent = "Erreur de chargement";
+      }
+    }
+    fetchPlayerCount();
+    setInterval(fetchPlayerCount, 10000);
+  </script>
+</body>
+</html>
