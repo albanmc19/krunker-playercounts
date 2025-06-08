@@ -23,23 +23,25 @@
   </div>
 
   <script>
-    let playerData = {
+    let allPlayerData = {
+      labels: [],
+      counts: []
+    };
+    let filteredData = {
       labels: [],
       counts: []
     };
     let currentInterval = '30min';
     let chart;
 
-    // Fonction pour sauvegarder les données dans le localStorage
     function saveData() {
-      localStorage.setItem('krunkerPlayerData', JSON.stringify(playerData));
+      localStorage.setItem('krunkerPlayerData', JSON.stringify(allPlayerData));
     }
 
-    // Fonction pour charger les données depuis le localStorage
     function loadData() {
       const savedData = localStorage.getItem('krunkerPlayerData');
       if (savedData) {
-        playerData = JSON.parse(savedData);
+        allPlayerData = JSON.parse(savedData);
       }
     }
 
@@ -48,10 +50,10 @@
       chart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: playerData.labels,
+          labels: filteredData.labels,
           datasets: [{
             label: 'Nombre de joueurs',
-            data: playerData.counts,
+            data: filteredData.counts,
             backgroundColor: 'rgba(54, 162, 235, 0.5)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1
@@ -79,65 +81,55 @@
     }
 
     function updateChart() {
-      chart.data.labels = playerData.labels;
-      chart.data.datasets[0].data = playerData.counts;
+      chart.data.labels = filteredData.labels;
+      chart.data.datasets[0].data = filteredData.counts;
       chart.update();
     }
 
     function addDataPoint(count) {
       const now = new Date();
       const timeStr = now.toLocaleTimeString() + ' ' + now.toLocaleDateString();
-      
-      playerData.labels.push(timeStr);
-      playerData.counts.push(count);
-
-      // Sauvegarder les données après chaque ajout
+      allPlayerData.labels.push(timeStr);
+      allPlayerData.counts.push(count);
       saveData();
-
-      // Filtrer les données selon l'intervalle sélectionné
       filterDataByInterval();
-
       updateChart();
     }
 
     function filterDataByInterval() {
       const now = new Date();
       let cutoffTime;
-
-      switch(currentInterval) {
-        case '30min':
-          cutoffTime = new Date(now.getTime() - 30 * 60 * 1000);
-          break;
-        case '1hour':
-          cutoffTime = new Date(now.getTime() - 60 * 60 * 1000);
-          break;
-        case '1day':
-          cutoffTime = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-          break;
-        case 'all':
-          return; // Ne pas filtrer pour "all"
-      }
-
-      const filteredData = {
-        labels: [],
-        counts: []
-      };
-
-      for (let i = 0; i < playerData.labels.length; i++) {
-        const dataTime = new Date(playerData.labels[i]);
-        if (dataTime >= cutoffTime) {
-          filteredData.labels.push(playerData.labels[i]);
-          filteredData.counts.push(playerData.counts[i]);
+      filteredData = { labels: [], counts: [] };
+      for (let i = 0; i < allPlayerData.labels.length; i++) {
+        const dataTime = new Date(allPlayerData.labels[i]);
+        let keep = false;
+        switch(currentInterval) {
+          case '30min':
+            cutoffTime = new Date(now.getTime() - 30 * 60 * 1000);
+            keep = dataTime >= cutoffTime;
+            break;
+          case '1hour':
+            cutoffTime = new Date(now.getTime() - 60 * 60 * 1000);
+            keep = dataTime >= cutoffTime;
+            break;
+          case '1day':
+            cutoffTime = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+            keep = dataTime >= cutoffTime;
+            break;
+          case 'all':
+            keep = true;
+            break;
+        }
+        if (keep) {
+          filteredData.labels.push(allPlayerData.labels[i]);
+          filteredData.counts.push(allPlayerData.counts[i]);
         }
       }
-
-      playerData = filteredData;
     }
 
     function changeInterval(interval) {
       currentInterval = interval;
-      loadData(); // Recharger toutes les données
-      filterDataByInterval(); // Filtrer selon le nouvel intervalle
+      filterDataByInterval();
       updateChart();
     }
 
@@ -154,6 +146,7 @@
 
     // Initialisation
     loadData();
+    filterDataByInterval();
     initChart();
     fetchPlayerCount();
     setInterval(fetchPlayerCount, 10000);
