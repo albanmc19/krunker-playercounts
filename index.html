@@ -34,6 +34,13 @@
     let currentInterval = '30min';
     let chart;
     
+    function loadData() {
+      const savedData = localStorage.getItem('krunkerPlayerData');
+      if (savedData) {
+        allPlayerData = JSON.parse(savedData);
+      }
+    }
+
     function initChart() {
       const ctx = document.getElementById('playerChart').getContext('2d');
       chart = new Chart(ctx, {
@@ -65,12 +72,25 @@
                 text: 'Nombre de joueurs'
               }
             }
+          },
+          plugins: {
+            title: {
+              display: filteredData.labels.length === 0,
+              text: filteredData.labels.length === 0 ? 'Aucune donnée à afficher' : ''
+            }
           }
         }
       });
     }
 
     function updateChart() {
+      if (filteredData.labels.length === 0) {
+        chart.options.plugins.title.display = true;
+        chart.options.plugins.title.text = 'Aucune donnée à afficher';
+      } else {
+        chart.options.plugins.title.display = false;
+        chart.options.plugins.title.text = '';
+      }
       chart.data.labels = filteredData.labels;
       chart.data.datasets[0].data = filteredData.counts;
       chart.update();
