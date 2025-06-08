@@ -48,7 +48,7 @@
     function initChart() {
       const ctx = document.getElementById('playerChart').getContext('2d');
       chart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
           labels: filteredData.labels,
           datasets: [{
@@ -60,6 +60,7 @@
           }]
         },
         options: {
+          indexAxis: 'y',
           responsive: true,
           scales: {
             y: {
