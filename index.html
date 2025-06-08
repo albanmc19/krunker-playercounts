@@ -33,18 +33,7 @@
     };
     let currentInterval = '30min';
     let chart;
-
-    function saveData() {
-      localStorage.setItem('krunkerPlayerData', JSON.stringify(allPlayerData));
-    }
-
-    function loadData() {
-      const savedData = localStorage.getItem('krunkerPlayerData');
-      if (savedData) {
-        allPlayerData = JSON.parse(savedData);
-      }
-    }
-
+    
     function initChart() {
       const ctx = document.getElementById('playerChart').getContext('2d');
       chart = new Chart(ctx, {
