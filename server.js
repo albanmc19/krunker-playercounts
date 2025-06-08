@@ -16,6 +16,7 @@ app.use(express.static(path.join(__dirname)));
 
 // Route pour obtenir le nombre de joueurs
 app.get('/playercount', async (req, res) => {
+    
     try {
         const response = await axios.get('https://matchmaker.krunker.io/game-list?hostname=krunker.io');
         const playerCount = response.data.totalPlayerCount || 0;
