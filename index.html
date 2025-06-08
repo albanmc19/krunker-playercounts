@@ -101,7 +101,7 @@
       const timeStr = now.toLocaleTimeString() + ' ' + now.toLocaleDateString();
       allPlayerData.labels.push(timeStr);
       allPlayerData.counts.push(count);
-      saveData();
+        saveData();
       filterDataByInterval();
       updateChart();
     }
@@ -143,14 +143,19 @@
       updateChart();
     }
 
+    function saveData() {
+      localStorage.setItem('krunkerPlayerData', JSON.stringify(allPlayerData));
+    }
+
     async function fetchPlayerCount() {
       try {
         const response = await fetch('/playercount');
         const data = await response.json();
-        document.getElementById('playerCount').textContent = 'data.playerCount';
-        console.log(data.playerCount);
+        document.getElementById('playerCount').textContent = data.playerCount;
+        console.log(data.playerCount)
         addDataPoint(data.playerCount);
       } catch (e) {
+        console.log(e)
         document.getElementById('playerCount').textContent = "Erreur de chargement";
       }
     }
