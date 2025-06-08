@@ -152,11 +152,14 @@
         const response = await fetch('/playercount');
         const data = await response.json();
         document.getElementById('playerCount').textContent = data.playerCount;
-        console.log(data.playerCount)
         addDataPoint(data.playerCount);
       } catch (e) {
-        console.log(e)
-        document.getElementById('playerCount').textContent = "Erreur de chargement";
+        // Toujours afficher la dernière valeur connue
+        if (allPlayerData.counts.length > 0) {
+          document.getElementById('playerCount').textContent = allPlayerData.counts[allPlayerData.counts.length - 1];
+        } else {
+          document.getElementById('playerCount').textContent = "0";
+        }
       }
     }
 
