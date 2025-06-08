@@ -48,14 +48,14 @@
     function initChart() {
       const ctx = document.getElementById('playerChart').getContext('2d');
       chart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
           labels: filteredData.labels,
           datasets: [{
             label: 'Nombre de joueurs',
             data: filteredData.counts,
-            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-            borderColor: 'rgba(54, 162, 235, 1)',
+            backgroundColor: 'rgba(76, 175, 80, 0.5)',
+            borderColor: 'rgba(76, 175, 80, 1)',
             borderWidth: 1
           }]
         },
