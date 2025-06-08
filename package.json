@@ -1,12 +1,13 @@
 {
-  "name": "krunker-playercount",
+  "name": "krunker-player-counter",
   "version": "1.0.0",
+  "description": "Compteur de joueurs Krunker en temps réel",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^5.1.0",
-    "node-fetch": "^3.3.2"
+    "express": "^4.18.2",
+    "axios": "^1.6.2"
   }
 }

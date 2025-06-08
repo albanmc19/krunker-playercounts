@@ -3,22 +3,158 @@
 <head>
   <meta charset="UTF-8">
   <title>Joueurs connectés sur Krunker.io</title>
-</head
-<link rel="stylesheet" href="style.css">>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
 <body>
   <h1>Joueurs connectés sur Krunker.io :</h1>
   <div id="playerCount">Chargement...</div>
+  
+  <div class="chart-container">
+    <canvas id="playerChart"></canvas>
+  </div>
+
+  <div class="controls">
+    <button onclick="changeInterval('30min')">30 minutes</button>
+    <button onclick="changeInterval('1hour')">1 heure</button>
+    <button onclick="changeInterval('1day')">1 jour</button>
+    <button onclick="changeInterval('all')">Tout l'historique</button>
+  </div>
 
   <script>
+    let playerData = {
+      labels: [],
+      counts: []
+    };
+    let currentInterval = '30min';
+    let chart;
+
+    // Fonction pour sauvegarder les données dans le localStorage
+    function saveData() {
+      localStorage.setItem('krunkerPlayerData', JSON.stringify(playerData));
+    }
+
+    // Fonction pour charger les données depuis le localStorage
+    function loadData() {
+      const savedData = localStorage.getItem('krunkerPlayerData');
+      if (savedData) {
+        playerData = JSON.parse(savedData);
+      }
+    }
+
+    function initChart() {
+      const ctx = document.getElementById('playerChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: playerData.labels,
+          datasets: [{
+            label: 'Nombre de joueurs',
+            data: playerData.counts,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Nombre de joueurs'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Temps'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updateChart() {
+      chart.data.labels = playerData.labels;
+      chart.data.datasets[0].data = playerData.counts;
+      chart.update();
+    }
+
+    function addDataPoint(count) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString() + ' ' + now.toLocaleDateString();
+      
+      playerData.labels.push(timeStr);
+      playerData.counts.push(count);
+
+      // Sauvegarder les données après chaque ajout
+      saveData();
+
+      // Filtrer les données selon l'intervalle sélectionné
+      filterDataByInterval();
+
+      updateChart();
+    }
+
+    function filterDataByInterval() {
+      const now = new Date();
+      let cutoffTime;
+
+      switch(currentInterval) {
+        case '30min':
+          cutoffTime = new Date(now.getTime() - 30 * 60 * 1000);
+          break;
+        case '1hour':
+          cutoffTime = new Date(now.getTime() - 60 * 60 * 1000);
+          break;
+        case '1day':
+          cutoffTime = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          break;
+        case 'all':
+          return; // Ne pas filtrer pour "all"
+      }
+
+      const filteredData = {
+        labels: [],
+        counts: []
+      };
+
+      for (let i = 0; i < playerData.labels.length; i++) {
+        const dataTime = new Date(playerData.labels[i]);
+        if (dataTime >= cutoffTime) {
+          filteredData.labels.push(playerData.labels[i]);
+          filteredData.counts.push(playerData.counts[i]);
+        }
+      }
+
+      playerData = filteredData;
+    }
+
+    function changeInterval(interval) {
+      currentInterval = interval;
+      loadData(); // Recharger toutes les données
+      filterDataByInterval(); // Filtrer selon le nouvel intervalle
+      updateChart();
+    }
+
     async function fetchPlayerCount() {
       try {
         const response = await fetch('/playercount');
         const data = await response.json();
         document.getElementById('playerCount').textContent = data.playerCount;
+        addDataPoint(data.playerCount);
       } catch (e) {
         document.getElementById('playerCount').textContent = "Erreur de chargement";
       }
     }
+
+    // Initialisation
+    loadData();
+    initChart();
     fetchPlayerCount();
     setInterval(fetchPlayerCount, 10000);
   </script>
